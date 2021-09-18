@@ -6,8 +6,8 @@ import io.ktor.response.respondText
 import io.ktor.routing.Route
 import io.ktor.routing.delete
 import io.ktor.routing.get
-import io.ktor.routing.patch
 import io.ktor.routing.post
+import io.ktor.routing.put
 import io.ktor.routing.route
 import nz.kirillov.service.StudentService
 import org.kodein.di.instance
@@ -17,25 +17,25 @@ class StudentController(application: Application) : AbstractDIController(applica
     private val studentService: StudentService by instance()
 
     override fun Route.getRoutes() {
-        route("/student") {
+        route("/students") {
             get {
                 call.respondText { studentService.getStudents().toString() }
             }
 
             get("{id}") {
-                call.respondText { "Single student" }
+                TODO()
             }
 
             post {
-                call.respondText("Created student")
+                TODO()
             }
 
-            patch("{id}") {
-                call.respondText("Updated student")
+            put("{id}") {
+                TODO()
             }
 
             delete {
-                call.respondText("Deleted student")
+                TODO()
             }
         }
     }

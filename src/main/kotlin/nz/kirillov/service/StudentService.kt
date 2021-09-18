@@ -9,4 +9,15 @@ class StudentService(private val repository: StudentRepository) {
         return repository.getStudents()
     }
 
+    fun getStudentById(id: Int) {
+        TODO()
+    }
+
+    fun updateStudent(updatedStudent: Student) {
+        TODO()
+    }
+
+    fun deleteStudent(id: Int) {
+        TODO()
+    }
 }
