@@ -1,21 +1,32 @@
 package nz.kirillov
 
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import kotlin.test.*
-import io.ktor.server.testing.*
-import nz.kirillov.plugins.*
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.handleRequest
+import io.ktor.server.testing.withTestApplication
+import nz.kirillov.controller.configureRouting
+import nz.kirillov.repository.StudentRepository
+import nz.kirillov.service.StudentService
+import org.assertj.core.api.Assertions.assertThat
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.ktor.di
+import org.kodein.di.singleton
+import kotlin.test.Test
 
 class ApplicationTest {
     @Test
     fun testRoot() {
-        withTestApplication({ configureRouting() }) {
-            handleRequest(HttpMethod.Get, "/").apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("Hello World!", response.content)
+        withTestApplication({
+                di {
+                    bind { singleton { StudentRepository() }}
+                    bind { singleton { StudentService(instance()) } }
+                }
+                configureRouting()
+            }) {
+            handleRequest(HttpMethod.Get, "/students").apply {
+                assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
+                assertThat(response.content).isEqualTo("foo")
             }
         }
     }

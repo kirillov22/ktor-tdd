@@ -8,6 +8,10 @@ plugins {
     kotlin("jvm") version "1.5.30"
 }
 
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(15))
+}
+
 group = "nz.kirillov"
 version = "0.0.1"
 application {
@@ -26,4 +30,5 @@ dependencies {
     implementation("org.kodein.di:kodein-di-framework-ktor-server-controller-jvm:$kodein_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
+    testImplementation("org.assertj:assertj-core:3.21.0")
 }
