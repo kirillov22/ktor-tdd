@@ -1,5 +1,8 @@
 package nz.kirillov.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Subject(val name: SubjectName, val grade: Float)
 
 enum class SubjectName {

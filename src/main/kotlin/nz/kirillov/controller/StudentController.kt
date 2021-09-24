@@ -2,7 +2,7 @@ package nz.kirillov.controller
 
 import io.ktor.application.Application
 import io.ktor.application.call
-import io.ktor.response.respondText
+import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.delete
 import io.ktor.routing.get
@@ -19,7 +19,7 @@ class StudentController(application: Application) : AbstractDIController(applica
     override fun Route.getRoutes() {
         route("/students") {
             get {
-                call.respondText { studentService.getStudents().toString() }
+                call.respond(studentService.getStudents())
             }
 
             get("{id}") {

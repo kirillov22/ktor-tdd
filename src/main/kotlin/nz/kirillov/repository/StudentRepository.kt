@@ -1,12 +1,12 @@
 package nz.kirillov.repository
 
+import kotlinx.datetime.LocalDate
 import nz.kirillov.model.Student
-import java.time.LocalDate
 
 class StudentRepository {
 
     fun getStudents(): List<Student> {
-        return listOf(Student(1,"bill", LocalDate.now(), emptyList(), 0.1))
+        return listOf(Student(1, "bill", LocalDate(1990, 3, 4), emptyList(), 0.1))
     }
 
     fun getStudentById(id: Int) {
