@@ -6,7 +6,7 @@ import nz.kirillov.repository.StudentRepository
 class StudentService(private val repository: StudentRepository) {
 
     fun getStudents(): List<Student> {
-        return repository.getStudents()
+        TODO()
     }
 
     fun getStudentById(id: Int): Student? {
