@@ -9,7 +9,7 @@ class StudentService(private val repository: StudentRepository) {
         return repository.getStudents()
     }
 
-    fun getStudentById(id: Int) {
+    fun getStudentById(id: Int): Student? {
         TODO()
     }
 

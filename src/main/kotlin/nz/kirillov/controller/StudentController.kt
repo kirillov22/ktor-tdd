@@ -2,6 +2,7 @@ package nz.kirillov.controller
 
 import io.ktor.application.Application
 import io.ktor.application.call
+import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.delete
@@ -23,7 +24,19 @@ class StudentController(application: Application) : AbstractDIController(applica
             }
 
             get("{id}") {
-                TODO()
+                val id = call.parameters["id"]?.toIntOrNull()
+
+                if (id == null) {
+                    call.respond(HttpStatusCode.BadRequest)
+                    return@get
+                }
+
+                studentService.getStudentById(id)?.let {
+                    call.respond(it)
+                    return@get
+                }
+
+                call.respond(HttpStatusCode.NotFound)
             }
 
             post {
