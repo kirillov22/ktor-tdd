@@ -1,5 +1,6 @@
 package nz.kirillov.service
 
+import nz.kirillov.model.AddStudentRequest
 import nz.kirillov.model.Student
 import nz.kirillov.repository.StudentRepository
 
@@ -10,6 +11,10 @@ class StudentService(private val repository: StudentRepository) {
     }
 
     fun getStudentById(id: Int): Student? {
+        TODO()
+    }
+
+    fun addStudent(student: AddStudentRequest): Int {
         TODO()
     }
 
