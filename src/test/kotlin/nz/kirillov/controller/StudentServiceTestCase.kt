@@ -77,13 +77,12 @@ class StudentServiceTestCase {
         val testStudent = getTestStudent()
         val addStudentRequest = AddStudentRequest(testStudent.name, testStudent.dateOfBirth, testStudent.enrolledClasses, testStudent.averageGpa)
         val nextStudentId = 322
-        val expectedStudent = Student(nextStudentId, testStudent.name, testStudent.dateOfBirth, testStudent.enrolledClasses, testStudent.averageGpa)
-        every { studentRepository.addStudent(any()) }
+        every { studentRepository.addStudent(any()) } returns nextStudentId
 
         val result = service.addStudent(addStudentRequest)
 
         assertThat(result).isEqualTo(nextStudentId)
-        verify { studentRepository.addStudent(expectedStudent) }
+        verify { studentRepository.addStudent(addStudentRequest) }
     }
 
     @Test
@@ -91,9 +90,10 @@ class StudentServiceTestCase {
         val studentId = 123
         val updateStudentRequest = getUpdatedStudent(studentId).first
         val updatedStudent = getUpdatedStudent(studentId).second
-        every { studentRepository.updateStudent(any()) }
+        every { studentRepository.getStudentById(123) } returns getTestStudent()
+        every { studentRepository.updateStudent(any()) } returns updatedStudent
 
-        service.updateStudent(updateStudentRequest)
+        service.updateStudent(studentId, updateStudentRequest)
 
         verify { studentRepository.updateStudent(updatedStudent) }
     }
@@ -102,42 +102,46 @@ class StudentServiceTestCase {
     fun `should update student fields correctly when updating a student`() {
         val studentId = 123
         val updateStudentRequest = getUpdatedStudent(studentId).first
-        every { studentRepository.updateStudent(any()) }
+        val updatedStudent = getUpdatedStudent(studentId).second
+        every { studentRepository.getStudentById(123) } returns getTestStudent()
+        every { studentRepository.updateStudent(any()) } returns updatedStudent
 
-        val result = service.updateStudent(updateStudentRequest)
+        val result = service.updateStudent(studentId, updateStudentRequest)
 
         assertThat(result.name).isEqualTo("Timothy")
         assertThat(result.dateOfBirth).isEqualTo(LocalDate(2001, 12, 12))
         assertThat(result.enrolledClasses).isEqualTo(UPDATED_SUBJECTS)
-        assertThat(result.averageGpa).isEqualTo(3.0f)
+        assertThat(result.averageGpa).isEqualTo(3.0)
     }
 
     @Test
     fun `should re-calculate student GPA when student is updated`() {
         val studentId = 123
         val updateStudentRequest = getUpdatedStudent(studentId).first
-        every { studentRepository.updateStudent(any()) }
+        val updatedStudent = getUpdatedStudent(studentId).second
+        every { studentRepository.getStudentById(123) } returns getTestStudent()
+        every { studentRepository.updateStudent(any()) } returns updatedStudent
 
-        val result = service.updateStudent(updateStudentRequest)
+        val result = service.updateStudent(studentId, updateStudentRequest)
 
-        assertThat(result.averageGpa).isEqualTo(3.0f)
+        assertThat(result.averageGpa).isEqualTo(3.0)
     }
 
     @Test
     fun `should throw error when trying to update a student that does not exist`() {
         val studentId = 123
         val updateStudentRequest = getUpdatedStudent(studentId).first
-        every { studentRepository.updateStudent(any()) } throws StudentDoesNotExistException()
+        every { studentRepository.getStudentById(studentId) } returns null
 
         assertThrows(StudentDoesNotExistException::class.java) {
-            service.updateStudent(updateStudentRequest)
+            service.updateStudent(studentId, updateStudentRequest)
         }
     }
 
     @Test
     fun `should call repository when deleting a student`() {
         val studentId = 123
-        every { studentRepository.deleteStudent(any()) }
+        every { studentRepository.deleteStudent(any()) } returns Unit
 
         service.deleteStudent(studentId)
 

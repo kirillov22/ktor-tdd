@@ -1,5 +1,6 @@
 package nz.kirillov.repository
 
+import nz.kirillov.model.AddStudentRequest
 import nz.kirillov.model.Student
 
 class StudentRepository {
@@ -12,11 +13,11 @@ class StudentRepository {
         TODO()
     }
 
-    fun addStudent(student: Student) {
+    fun addStudent(student: AddStudentRequest): Int {
         TODO()
     }
 
-    fun updateStudent(updatedStudent: Student) {
+    fun updateStudent(updatedStudent: Student): Student {
         TODO()
     }
 
