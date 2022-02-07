@@ -47,7 +47,6 @@ class StudentController(application: Application) : AbstractDIController(applica
                 try {
                     student = call.receive()
                 } catch (e: Exception) {
-                    println(e)
                     call.respond(HttpStatusCode.BadRequest, e.message ?: "Bad Request")
                     return@post
                 }

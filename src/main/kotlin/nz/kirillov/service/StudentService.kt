@@ -2,6 +2,7 @@ package nz.kirillov.service
 
 import nz.kirillov.model.AddStudentRequest
 import nz.kirillov.model.Student
+import nz.kirillov.model.UpdateStudentRequest
 import nz.kirillov.repository.StudentRepository
 
 class StudentService(private val repository: StudentRepository) {
@@ -18,7 +19,7 @@ class StudentService(private val repository: StudentRepository) {
         TODO()
     }
 
-    fun updateStudent(updatedStudent: Student) {
+    fun updateStudent(updatedStudent: UpdateStudentRequest): Student {
         TODO()
     }
 

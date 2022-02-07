@@ -8,7 +8,11 @@ class StudentRepository {
         TODO()
     }
 
-    fun getStudentById(id: Int) {
+    fun getStudentById(id: Int): Student? {
+        TODO()
+    }
+
+    fun addStudent(student: Student) {
         TODO()
     }
 
