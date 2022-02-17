@@ -1,0 +1,4 @@
+[
+  {"id":123,"name":"Bill","dateOfBirth":{"year":1990,"month":3,"day":4},"enrolledClasses":[],"averageGpa":0.0},
+  {"id":321,"name":"Alice","dateOfBirth":{"year":1992,"month":7,"day":18},"enrolledClasses":[{"name":"COMPUTER_SCIENCE","grade":8.0},{"name":"MUSIC","grade":6.0}],"averageGpa":6.0}
+]

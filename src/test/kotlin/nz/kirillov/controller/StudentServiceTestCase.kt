@@ -158,15 +158,6 @@ class StudentServiceTestCase {
         }
     }
 
-    private fun getTestStudents(): List<Student> {
-        val student1 = getTestStudent()
-        val birthDate2 = LocalDate(1992, 7, 18)
-
-        val subjects = listOf(Subject(SubjectName.COMPUTER_SCIENCE, 5.5f), Subject(SubjectName.MUSIC, 4.8f))
-        val student2 = Student(321, "Alice", birthDate2, subjects, 5.15)
-        return listOf(student1, student2)
-    }
-
     private fun getUpdatedStudent(id: Int): Pair<UpdateStudentRequest, Student> {
         val name = "Timothy"
         val updatedBirthDate = LocalDate(2001, 12, 12)
@@ -175,11 +166,6 @@ class StudentServiceTestCase {
 
         val student = Student(id, name, updatedBirthDate, subjects, averageGpa)
         return Pair(UpdateStudentRequest(name, updatedBirthDate, subjects), student)
-    }
-
-    private fun getTestStudent(): Student {
-        val birthDate1 = LocalDate(1990, 3, 4)
-        return Student(123, "Bill", birthDate1, emptyList(), 0.0)
     }
 
     companion object {
