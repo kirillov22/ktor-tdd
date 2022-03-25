@@ -13,6 +13,8 @@ import io.ktor.routing.put
 import io.ktor.routing.route
 import nz.kirillov.model.AddStudentRequest
 import nz.kirillov.model.AddStudentResponse
+import nz.kirillov.model.StudentDoesNotExistException
+import nz.kirillov.model.UpdateStudentRequest
 import nz.kirillov.service.StudentService
 import org.kodein.di.instance
 import org.kodein.di.ktor.controller.AbstractDIController
@@ -56,11 +58,36 @@ class StudentController(application: Application) : AbstractDIController(applica
             }
 
             put("{id}") {
-                TODO()
+                try {
+                    val studentReq = call.receive<UpdateStudentRequest>()
+                    val parameterValue = call.parameters["id"]?.toIntOrNull()
+                    val studentId = parameterValue ?: return@put call.respond(HttpStatusCode.BadRequest, "Id must not be null")
+
+                    studentService.updateStudent(studentId, studentReq)
+
+                    return@put call.respond(HttpStatusCode.OK)
+                } catch (e: Exception) {
+                    when (e) {
+                        is StudentDoesNotExistException -> call.respond(HttpStatusCode.NotFound)
+                        else -> call.respond(HttpStatusCode.InternalServerError, e.message ?: "Internal Server error")
+                    }
+                }
             }
 
             delete("{id}") {
-                TODO()
+                try {
+                    val parameterValue = call.parameters["id"]?.toIntOrNull()
+                    val studentId = parameterValue ?: return@delete call.respond(HttpStatusCode.BadRequest, "Id must not be null")
+
+                    studentService.deleteStudent(studentId)
+
+                    return@delete call.respond(HttpStatusCode.OK)
+                } catch (e: Exception) {
+                    when (e) {
+                        is StudentDoesNotExistException -> call.respond(HttpStatusCode.NotFound, "Given student not found")
+                        else -> call.respond(HttpStatusCode.InternalServerError, e)
+                    }
+                }
             }
         }
     }

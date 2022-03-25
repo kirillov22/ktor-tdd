@@ -12,10 +12,14 @@ import io.ktor.server.testing.withTestApplication
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import nz.kirillov.model.AddStudentResponse
 import nz.kirillov.model.Student
+import nz.kirillov.model.StudentDoesNotExistException
+import nz.kirillov.model.Subject
+import nz.kirillov.model.SubjectName
 import nz.kirillov.repository.StudentRepository
 import nz.kirillov.service.StudentService
 import org.assertj.core.api.Assertions.assertThat
@@ -128,6 +132,62 @@ class StudentControllerTestCase {
         }
     }
 
+    @Test
+    fun `should return 200 status code when PUT request is made to update student`() {
+        every { studentService.updateStudent(any(), any()) } returns getUpdatedStudent()
+        withTestApplication(configure()) {
+            handleRequest(HttpMethod.Put, "/students/123") {
+                addHeader("content-type", "application/json")
+                setBody(getValidUpdateStudent())
+            }.apply {
+                assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
+            }
+        }
+    }
+
+    @Test
+    fun `should return 400 status code when PUT request is made to update student with non-int id`() {
+        every { studentService.updateStudent(any(), any()) } returns getUpdatedStudent()
+        withTestApplication(configure()) {
+            handleRequest(HttpMethod.Put, "/students/aa") {
+                addHeader("content-type", "application/json")
+                setBody(getValidUpdateStudent())
+            }.apply {
+                assertThat(response.status()).isEqualTo(HttpStatusCode.BadRequest)
+            }
+        }
+    }
+
+    @Test
+    fun `should return 200 status code when DELETE request is made to delete existing student`() {
+        every { studentService.deleteStudent(any()) } returns Unit
+        withTestApplication(configure()) {
+            handleRequest(HttpMethod.Delete, "/students/123") .apply {
+                assertThat(response.status()).isEqualTo(HttpStatusCode.OK)
+            }
+        }
+    }
+
+    @Test
+    fun `should return 400 status code when DELETE request is made to delete existing student with invalid id`() {
+        every { studentService.deleteStudent(any()) } returns Unit
+        withTestApplication(configure()) {
+            handleRequest(HttpMethod.Delete, "/students/aa") .apply {
+                assertThat(response.status()).isEqualTo(HttpStatusCode.BadRequest)
+            }
+        }
+    }
+
+    @Test
+    fun `should return 404 status code when DELETE request is made to delete student that does not exist`() {
+        every { studentService.deleteStudent(any()) } throws StudentDoesNotExistException()
+        withTestApplication(configure()) {
+            handleRequest(HttpMethod.Delete, "/students/999111") .apply {
+                assertThat(response.status()).isEqualTo(HttpStatusCode.NotFound)
+            }
+        }
+    }
+
     private fun configure(): Application.() -> Unit = {
         install(ContentNegotiation) {
             json()
@@ -155,5 +215,29 @@ class StudentControllerTestCase {
                 "    \"enrolledClasses\": [],\n" +
                 "    \"averageGpa\": \"ccc\"\n" +
                 "}"
+    }
+
+    private fun getValidUpdateStudent(): String {
+        return "{\n" +
+                "    \"name\": \"Billbo\",\n" +
+                "    \"dateOfBirth\": \"1990-04-03\",\n" +
+                "    \"enrolledClasses\": [{\"name\":\"COMPUTER_SCIENCE\",\"grade\":1.0},{\"name\":\"MUSIC\",\"grade\":2.0}]\n" +
+                "}"
+    }
+
+    private fun getInvalidUpdateStudent(): String {
+        return "{\n" +
+                "    \"name\": \"Billbo\",\n" +
+                "    \"dateOfBirth\": \"aaaa\",\n" +
+                "}"
+    }
+
+    private fun getUpdatedStudent(): Student {
+        return Student(
+            123,
+            "Billbo",
+            LocalDate(1990, 4, 3),
+            listOf(Subject(SubjectName.COMPUTER_SCIENCE, 1.0f), Subject(SubjectName.MUSIC, 2.0f)),
+            1.5)
     }
 }
